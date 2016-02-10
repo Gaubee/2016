@@ -1,18 +1,20 @@
 <link rel="stylesheet" href="./css/lib/reset.css">
 <link rel="stylesheet" href="./css/loader.css">
-<link href='https://fonts.googleapis.com/css?family=Roboto:400' rel='stylesheet' type='text/css'>
-
-<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-	<!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
-	<g id="loader-progress">
-		<title>大背景</title>
-		<ellipse stroke-dasharray="2,4" ry="500" rx="500" id="loader-progress-line" cy="50%" cx="50%" stroke="rgba(255, 255, 255, 0.8)" fill="rgba(0, 0, 0, 0)"/>
-		<ellipse stroke-dasharray="null" ry="500" rx="500" id="loader-progress-bar" cy="50%" cx="50%" stroke="rgba(255, 255, 255, 1)" stroke-width="4" fill="rgba(0, 0, 0, 0)"/><!--  transform="rotate(-90 100%,100%)" -->
-	</g>
-</svg>
+<link href='http://fonts.useso.com/css?family=Roboto:400' rel='stylesheet' type='text/css'>
+ <div id="loader-progress-svg">
+	<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+		<!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+		<g id="loader-progress">
+			<ellipse stroke-dasharray="2,4" ry="500" rx="500" id="loader-progress-line" cy="50%" cx="50%" stroke="rgba(255, 255, 255, 0.8)" fill="rgba(0, 0, 0, 0)"/>
+			<ellipse stroke-dasharray="null" ry="500" rx="500" id="loader-progress-bar" cy="50%" cx="50%" stroke="rgba(255, 255, 255, 1)" stroke-width="4" fill="rgba(0, 0, 0, 0)"/><!--  transform="rotate(-90 100%,100%)" -->
+		</g>
+	</svg>
+</div>
+<canvas id="loader-progress-canvas" keepalive="true" >
+</canvas>
 <div id="big-bg">
 	<div class="bg-img"></div>
-	<div class="bg-mask"></div>
+	<canvas id="bg-canvas" class="bg-mask" keepalive="true"></canvas>
 </div>
 <div id="welcome-view">
 	<!-- 启动面板 -->
@@ -25,7 +27,7 @@
 	</p>
 	<div class="bar">
 		<span class="text">欢迎Welcome</span>
-		<svg width="50" height="30">
+		<svg xmlns="http://www.w3.org/2000/svg" version="1.1" id="QAQ" width="50" height="30">
 			<ellipse fill="rgba(0, 0, 0, 0)" stroke-width="1" stroke-opacity="null" fill-opacity="null" cx="15" cy="15" id="svg_3" rx="12" ry="12" stroke="rgba(255, 255, 255, 0.9)" stroke-dasharray="none"></ellipse>
 			<path fill="rgba(0, 0, 0, 0)" stroke-width="1" stroke-opacity="null" fill-opacity="null" d="M10,12.5 L15,17.5 L20,12.5 " id="svg_10" transform="rotate(-90 15,15)" stroke-dasharray="none" stroke="rgba(255, 255, 255, 0.9)"></path>
 		</svg>
@@ -35,5 +37,12 @@
 <script src="./js/lib/TweenMax.min.js"></script>
 <script src="./js/lib/DrawSVGPlugin.js"></script>
 <script src="./js/lib/jquery.min.js"></script>
+<script src="./js/lib/jquery.easing.min.js"></script>
+<script src="./js/lib/Ani.js"></script>
+
+<script src="./js/lib/paper-full.js"></script>
+
+<script type="text/paperscript" src="./js/paper/loader-progress.js" canvas="loader-progress-canvas"></script>
+<script type="text/paperscript" src="./js/paper/bg-canvas.js" canvas="loader-progress-canvas"></script>
 
 <script src="./js/loader.js"></script>
