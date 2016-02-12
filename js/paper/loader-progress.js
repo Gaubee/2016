@@ -9,7 +9,7 @@ var end_p_ani_time = 1600; //1:1
 var hover_ani_time = 1500; //2:3
 var close_ani_time = 1200;
 
-var loader_base_line = new Path.Circle({
+var loader_base_line = new Shape.Circle({
 	center: view.center,
 	radius: radius
 });
@@ -57,6 +57,8 @@ var anis = $.Anis();
 // $ele: show after progress is 100%;
 function initP($ele) {
 	if (loader.$controller = $ele) {
+		$ele.removeClass("display-none");
+
 		TweenLite.set($ele, {
 			scale: 0
 		});
@@ -66,24 +68,27 @@ function initP($ele) {
 	var base_rotate = 0;
 	anis.create({
 		scale: 1,
-		rotate: 0
+		rotate: 90
 	}, init_ani_time, "easeInOutBack", {
-		scale: 0.5,
+		scale: 0.3,
 		rotate: 0
 	}, function(new_obj) {
-		loader_group.rotate(new_obj.rotate - base_rotate);
+		loader_base_line.rotate(new_obj.rotate - base_rotate, view.center);
+		// loader_group.rotate(new_obj.rotate - base_rotate, view.center);
 		base_rotate = new_obj.rotate;
-		loader_group.scale(1 / base_scale * new_obj.scale, view.center);
+
+		loader_base_line.radius = new_obj.scale * radius;
+		// loader_group.scale(1 / base_scale * new_obj.scale, view.center);
 		base_scale = new_obj.scale;
 	});
-	anis.then(_run_progress);
 };
 // 进度 动画
+var progress_ani;
 
 function setP(progress) {
 	progress = progress / 100;
-	anis.clear();
-	anis.create({
+	anis.remove(progress_ani);
+	progress_ani = anis.thenAdd({
 		progress: progress,
 	}, set_p_ani_time, "easeOutQuad", {
 		progress: loader_progress_line._progress
@@ -110,6 +115,7 @@ function setP(progress) {
 		});
 
 		loader.can_hover_able = true;
+
 		loader.$controller && TweenLite.to(loader.$controller, end_p_ani_time / 2 / 1000, {
 			scale: 1,
 			ease: Back.easeOut.config(1.7)
@@ -142,12 +148,13 @@ function hoverP(is_enter) {
 		rotate: hover_rotate,
 		scale: hover_scale
 	}, function(new_obj) {
-		loader_group.rotate(new_obj.rotate - hover_rotate);
+		loader_base_line.rotate(new_obj.rotate - hover_rotate, view.center);
+		// loader_group.rotate(new_obj.rotate - hover_rotate);
 		hover_rotate = new_obj.rotate;
+		// loader_base_line.radius = new_obj.scale * radius;
 		loader_group.scale(1 / hover_scale * new_obj.scale, view.center);
 		hover_scale = new_obj.scale;
 	});
-	console.log(hover_ani)
 };
 
 // 关闭 动画
@@ -172,12 +179,15 @@ function closeP() {
 	loader.$controller && TweenLite.to(loader.$controller, close_ani_time / 1000, {
 		scale: 0,
 		opacity: 0,
+		display: "none",
 		ease: Back.easeIn.config(1.7)
 	});
+
 	anis.then(function() {
 		loader_group.remove();
 		loader.$controller && loader.$controller.remove();
 	});
+	return anis;
 };
 
 function onResize() {
@@ -209,16 +219,16 @@ $.each([
 	}
 });
 
-function _run_progress() {
-	var p = 0;
-	var _ti = setInterval(function() {
-		p += Math.random() * 80;
-		if (p >= 100) {
-			p = 100;
-			clearInterval(_ti);
-		};
-		setP(p);
-	}, 500);
-};
+// function _run_progress() {
+// 	var p = 0;
+// 	var _ti = setInterval(function() {
+// 		p += Math.random() * 80;
+// 		if (p >= 100) {
+// 			p = 100;
+// 			clearInterval(_ti);
+// 		};
+// 		setP(p);
+// 	}, 500);
+// };
 
 loader.init($("#welcome-view"));

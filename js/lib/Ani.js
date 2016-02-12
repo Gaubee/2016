@@ -7,7 +7,6 @@
 
 		// 动画队列
 		var quene = Ani._q = [];
-		var completed_quene = Ani._c_q = [];
 
 		function Ani(to, duration, easing_name, obj, cb, delay) {
 			var self = this;
@@ -59,9 +58,26 @@
 				self.start_count = count;
 				self.run = run;
 				run.apply(self, arguments);
-			}
+			};
+			self.stop = function(count, time, delta) {
+				if (!self.is_stop) {
+					self.stop_time = time;
+					self.stop_count = count;
+					self.is_stop = true;
+				}
+			};
+			self.remuse = function(count, time, delta) {
+				if (self.is_stop) {
+					self.is_stop = false;
+					self.start_time += time - self.stop_time;
+					self.start_count += count - self.stop_count;
+				}
+			};
 
 			function run(count, time, delta) {
+				if (self.is_stop) {
+					return
+				}
 				var x, t, b, c, d;
 				t = (time - self.start_time) * 1000;
 				if (self.remaining_delay !== 0) {
@@ -78,7 +94,7 @@
 
 				d = self.duration;
 				t = Math.min(d, t);
-				x = self.progress = t / d;
+				x = self.progress = d ? t / d : 1; // d == 0 --> progress = 1
 				// console.log(x, easing_fun(x, t, 0, 1, d))
 
 				var new_obj = {};
@@ -103,12 +119,14 @@
 				if (self.progress === 1) {
 					self.complete = true;
 					Ani.remove(self);
-					completed_quene.push(self);
+					if ($.isFunction(self.onComplete)) {
+						self.onComplete(count, time, delta);
+					}
 				}
 			};
 
 			/*base attrs*/
-			self.duration = parseInt(duration, 10) || 0; // animate duration
+			self.duration = Math.max(parseInt(duration, 10) || 0, 0); // animate duration
 			self.delay = parseInt(delay, 10) || 0;
 			self.remaining_delay = self.delay;
 			self.start_time = 0; // first frame time
@@ -116,10 +134,14 @@
 			self.progress = 0;
 			self.complete = false;
 
-			/*add to quene*/
-			Ani.add(self);
 		};
-		Ani.create = Ani;
+		Ani.create = function() {
+			var ani = Ani.apply(this, arguments);
+
+			/*add to quene*/
+			Ani.add(ani);
+			return ani;
+		};
 
 		Ani.add = function(ani) {
 			if (ani instanceof Ani && quene.indexOf(ani) === -1) {
@@ -140,12 +162,18 @@
 				ani.run(count, time, delta)
 			}
 		};
-
-		Ani.thenAdd = function(to, duration, easing_name, obj, cb, delay) {
-			delay = Ani.then(null, delay);
-			return Ani.create(to, duration, easing_name, obj, cb, delay);
+		Ani.stop = function(count, time, delta) {
+			for (var i = 0, ani; ani = quene[i]; i += 1) {
+				ani.stop(count, time, delta)
+			}
 		};
-		Ani.then = function(cb, delay) {
+		Ani.remuse = function(count, time, delta) {
+			for (var i = 0, ani; ani = quene[i]; i += 1) {
+				ani.remuse(count, time, delta)
+			}
+		};
+
+		Ani.getDelay = function(delay) {
 			var max_delay = 0;
 			for (var i = 0, ani; ani = quene[i]; i += 1) {
 				// console.log(ani.remaining_delay)
@@ -153,9 +181,17 @@
 			}
 			delay = parseInt(delay, 10) || 0;
 			delay += max_delay;
-			$.isFunction(cb) && setTimeout(cb, delay);
-			// console.log(delay)
 			return delay;
+		};
+		Ani.thenAdd = function(to, duration, easing_name, obj, cb, delay) {
+			delay = Ani.getDelay(delay);
+			return Ani.create(to, duration, easing_name, obj, cb, delay);
+		};
+		Ani.then = function(cb, delay) {
+			delay = Ani.getDelay(delay);
+
+			// 使用动画队列，可被remove
+			return $.isFunction(cb) && Ani.create({}, 0, "linear", {}, cb, delay);
 		};
 		return Ani;
 	}

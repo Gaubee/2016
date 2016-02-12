@@ -1,16 +1,22 @@
-<!-- <script src="./js/lib/pace.min.js"></script> -->
 <link rel="stylesheet" href="./css/lib/reset.css">
 <link rel="stylesheet" href="./css/loader.css">
 <link href='http://fonts.useso.com/css?family=Roboto:400' rel='stylesheet' type='text/css'>
-
+ <div id="loader-progress-svg">
+	<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+		<!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+		<g id="loader-progress">
+			<ellipse stroke-dasharray="2,4" ry="500" rx="500" id="loader-progress-line" cy="50%" cx="50%" stroke="rgba(255, 255, 255, 0.8)" fill="rgba(0, 0, 0, 0)"/>
+			<ellipse stroke-dasharray="null" ry="500" rx="500" id="loader-progress-bar" cy="50%" cx="50%" stroke="rgba(255, 255, 255, 1)" stroke-width="4" fill="rgba(0, 0, 0, 0)"/><!--  transform="rotate(-90 100%,100%)" -->
+		</g>
+	</svg>
+</div>
 <canvas id="loader-progress-canvas" keepalive="true" >
 </canvas>
-<!-- <div id="big-bg">
+<div id="big-bg">
 	<div class="bg-img"></div>
 	<canvas id="bg-canvas" class="bg-mask" keepalive="true"></canvas>
-</div> -->
-<canvas id="bg-canvas" keepalive="true"></canvas>
-<div class="display-none" id="welcome-view">
+</div>
+<div id="welcome-view">
 	<!-- 启动面板 -->
 	<p class="title">标题</p>
 	<div class="divider"></div>
@@ -27,7 +33,6 @@
 		</svg>
 	</div>
 </div>
-<canvas id="map-nav" keepalive="true"></canvas>
 
 <script src="./js/lib/TweenMax.min.js"></script>
 <script src="./js/lib/DrawSVGPlugin.js"></script>
@@ -38,6 +43,6 @@
 <script src="./js/lib/paper-full.js"></script>
 
 <script type="text/paperscript" src="./js/paper/loader-progress.js" canvas="loader-progress-canvas"></script>
-<script type="text/paperscript" src="./js/paper/bg-canvas.js" canvas="bg-canvas"></script>
-<script type="text/paperscript" src="./js/paper/main.js" canvas="loader-progress-canvas"></script>
-<script type="text/paperscript" src="./js/paper/map-nav.js" canvas="map-nav"></script>
+<script type="text/paperscript" src="./js/paper/bg-canvas.js" canvas="loader-progress-canvas"></script>
+
+<script src="./js/loader.js"></script>
