@@ -1,1 +1,49 @@
-[{"name":"鲤城区","center":[118.588929,24.907645]},{"name":"丰泽区","center":[118.605147,24.896041]},{"name":"洛江区","center":[118.670312,24.941153]},{"name":"泉港区","center":[118.912285,25.126859]},{"name":"惠安县","center":[118.798954,25.028718]},{"name":"安溪县","center":[118.186014,25.056824]},{"name":"永春县","center":[118.29503,25.320721]},{"name":"德化县","center":[118.242986,25.489004]},{"name":"金门县","center":[118.323221,24.436417]},{"name":"石狮市","center":[118.628402,24.731978]},{"name":"晋江市","center":[118.577338,24.807322]},{"name":"南安市","center":[118.387031,24.959494]}]
+[{
+	"name": "鲤城区",
+	"center": [118.588929, 24.907645],
+	"preview_img_url": "./res/1.webp"
+}, {
+	"name": "丰泽区",
+	"center": [118.605147, 24.896041],
+	"preview_img_url": "./res/2.webp"
+}, {
+	"name": "洛江区",
+	"center": [118.670312, 24.941153],
+	"preview_img_url": "./res/3.webp"
+}, {
+	"name": "泉港区",
+	"center": [118.912285, 25.126859],
+	"preview_img_url": "./res/4.webp"
+}, {
+	"name": "惠安县",
+	"center": [118.798954, 25.028718],
+	"preview_img_url": "./res/5.webp"
+}, {
+	"name": "安溪县",
+	"center": [118.186014, 25.056824],
+	"preview_img_url": "./res/6.webp"
+}, {
+	"name": "永春县",
+	"center": [118.29503, 25.320721],
+	"preview_img_url": "./res/7.webp"
+}, {
+	"name": "德化县",
+	"center": [118.242986, 25.489004],
+	"preview_img_url": "./res/8.webp"
+}, {
+	"name": "金门县",
+	"center": [118.323221, 24.436417],
+	"preview_img_url": "./res/9.webp"
+}, {
+	"name": "石狮市",
+	"center": [118.628402, 24.731978],
+	"preview_img_url": "./res/10.webp"
+}, {
+	"name": "晋江市",
+	"center": [118.577338, 24.807322],
+	"preview_img_url": "./res/11.webp"
+}, {
+	"name": "南安市",
+	"center": [118.387031, 24.959494],
+	"preview_img_url": "./res/12.webp"
+}]

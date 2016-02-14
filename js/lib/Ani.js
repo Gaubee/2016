@@ -54,7 +54,7 @@
 			self.cb = cb;
 
 			self.run = function first_run(count, time, delta) {
-				self.start_time = time;
+				self.start_time = time - delta;
 				self.start_count = count;
 				self.run = run;
 				run.apply(self, arguments);

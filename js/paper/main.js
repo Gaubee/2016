@@ -19,11 +19,25 @@ $welcome_view.find("> .bar").hover(function() {
 	loader.hover();
 	bigbg.hover();
 }).click(function() {
-	loader.hover();
-	bigbg.hover();
 
-	bigbg.changeImg("http://img.bz1111.com/d7/2007-9/200709010151466707.jpg");
+	bigbg.changeImg("./img/big-bg-2.jpg");
 	loader.close().then(function() {
 		mapnav.init(mapnav.show);
 	});
 });
+
+window.main = {
+	cursor: function(type) {
+		type || (type = "default");
+		if (type === "hover") {
+			type = "pointer";
+		}
+		if (type === "grab") {
+			type = "-webkit-grab";
+		}
+		if (type === "grabbing") {
+			type = "-webkit-grabbing";
+		}
+		document.body.style.cursor = type;
+	}
+}

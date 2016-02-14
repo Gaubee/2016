@@ -27,7 +27,13 @@
 		</svg>
 	</div>
 </div>
+<style>
+	#loader-progress-canvas,#welcome-view{
+		opacity: 0;
+	}
+</style>
 <canvas id="map-nav" keepalive="true"></canvas>
+<canvas id="ap-nav" keepalive="true"></canvas>
 
 <script src="./js/lib/TweenMax.min.js"></script>
 <script src="./js/lib/DrawSVGPlugin.js"></script>
@@ -41,3 +47,4 @@
 <script type="text/paperscript" src="./js/paper/bg-canvas.js" canvas="bg-canvas"></script>
 <script type="text/paperscript" src="./js/paper/main.js" canvas="loader-progress-canvas"></script>
 <script type="text/paperscript" src="./js/paper/map-nav.js" canvas="map-nav"></script>
+<script type="text/paperscript" src="./js/paper/ap-nav.js" canvas="ap-nav"></script>

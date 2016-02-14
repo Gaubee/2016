@@ -20,7 +20,8 @@ var attraction_line;
 attraction_line.closed = false;*/
 var base_al_style = {
 	strokeColor: 0.8,
-	strokeWidth: 1.5
+	strokeWidth: 1.5,
+	strokeJoin: 'round'
 };
 
 var attraction_points = window.ap = new Group();
@@ -84,10 +85,13 @@ attraction_points.on("mouseenter", function(e) {
 		text = attraction_point.data.$text = new PointText($.extend({}, base_ap_name_style, {
 			fillColor: "rgba(255,255,255," + base_ap_name_style.fillColor + ")",
 		}));
-		text.content = attraction_point.data.name;
-	} else if (!text.isInserted()) {
-		project.activeLayer.addChild(text);
+		text.content = attraction_point.data.info.name;
 	}
+	/*else if (!text.isInserted()) {
+		project.activeLayer.addChild(text);
+	}*/
+	map_group.addChild(text);
+
 	var text_bounds = text.bounds;
 	var attraction_point_bounds = attraction_point.bounds;
 
@@ -108,6 +112,7 @@ attraction_points.on("mouseenter", function(e) {
 		});
 	attraction_point.data.ani_text_to = to_position;
 	attraction_point.data.ani_text_from = from_position;
+	main.cursor("pointer");
 });
 attraction_points.on("mouseleave", function(e) {
 	var attraction_point = e.target;
@@ -123,12 +128,87 @@ attraction_points.on("mouseleave", function(e) {
 				text.opacity = new_obj.opacity;
 			});
 		attraction_point.data.ani_text.onComplete = function() {
-			text.remove()
+			text.remove();
+			// map_group.removeChildren(text);
 		};
+		main.cursor();
 	}
 });
 
+var small_ani;
+var small_ani_time = 2000;
+var small_base_scale = 1;
+var samll_width = 120;
+var small_x = 10;
+var small_y = 10;
+
+var oneline_ani;
+var oneline_ani_time = 1200;
+var oneline_base_style;
+// 笑话
+attraction_points.on("click", function(e) {
+	attraction_points.emit("mouseleave", e);
+	// small ani
+	var attraction_point = e.target;
+	var map_paths_bounds = map_paths.bounds;
+	anis.remove(small_ani);
+	small_ani = anis.create({
+		scale: samll_width / map_paths_bounds.width,
+		x: small_x,
+		y: small_y
+	}, small_ani_time, "easeOutExpo", {
+		scale: small_base_scale,
+		x: map_paths_bounds.x,
+		y: map_paths_bounds.y
+	}, function(new_obj) {
+		map_paths.scale(1 / small_base_scale * new_obj.scale);
+		small_base_scale = new_obj.scale;
+
+		map_paths.bounds.x = new_obj.x;
+		map_paths.bounds.y = new_obj.y;
+	});
+
+	// stop marquee
+	is_stop_marquee_ani = true;
+
+	// oneline ani
+	oneline_base_style || (oneline_base_style = {
+		x: attraction_line.bounds.x,
+		y: attraction_line.bounds.y,
+		height: attraction_line.bounds.height,
+		width: attraction_line.bounds.width
+	});
+	anis.remove(oneline_ani);
+	oneline_ani = anis.create({
+		x: -view.bounds.width * 0.5 / 2,
+		y: view.center.y,
+		height: 0,
+		width: view.bounds.width * 1.5
+	}, oneline_ani_time, "easeOutExpo", oneline_base_style, function(new_obj) {
+		attraction_line.bounds.height = new_obj.height;
+		attraction_line.bounds.width = new_obj.width;
+		attraction_line.bounds.x = new_obj.x;
+		attraction_line.bounds.y = new_obj.y;
+	});
+	oneline_ani.onComplete = function() {
+
+		var base_scale = 1
+		anis.create({
+			scale: 0
+		}, oneline_ani_time / 2, "easeInQuad", {
+			scale: base_scale
+		}, function(new_obj) {
+			var scale = 1 / base_scale * new_obj.scale;
+			attraction_line.scale(scale, view.center);
+			attraction_points.scale(scale, view.center);
+			base_scale = new_obj.scale;
+		});
+	}
+
+});
+
 var anis = $.Anis();
+var is_stop_marquee_ani = false;
 
 // 显示模块
 function show() {
@@ -153,7 +233,8 @@ function show() {
 	// AL
 	attraction_line.style = {
 		strokeWidth: base_al_style.strokeWidth,
-		strokeColor: "rgba(255,255,255," + base_al_style.strokeColor + ")"
+		strokeColor: "rgba(255,255,255," + base_al_style.strokeColor + ")",
+		strokeJoin: base_al_style.strokeJoin
 	};
 	attraction_line.closed = false;
 	window.al = attraction_line;
@@ -188,7 +269,7 @@ function show() {
 	var marquee_time = 1000;
 
 	function marquee() {
-		anis.thenAdd({
+		is_stop_marquee_ani || anis.thenAdd({
 			dashOffset: map_paths.style.dashOffset + 4
 		}, marquee_time, "linear", map_paths.style);
 		setTimeout(marquee, marquee_time);
@@ -227,7 +308,7 @@ function init(cb) {
 			at.data.ani_style = { // 动画缓冲的参数
 				scale: 1
 			};
-			at.data.name = attraction.name;
+			at.data.info = attraction;
 
 			attraction_points.addChild(at);
 		});
@@ -295,4 +376,5 @@ window.mapnav = {
 	init: init,
 	show: show
 };
+
 // init(show);

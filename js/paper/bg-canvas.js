@@ -23,7 +23,7 @@ bg_img.onLoad = function() {
 		img_move_ani = bg_img_anis.create({
 			x: 0,
 			y: 0
-		}, img_move_time, "easeInSine", bg_img.bounds, function(new_obj) {
+		}, img_move_time, "easeInOutSine", bg_img.bounds, function(new_obj) {
 			bg_img.bounds.x = new_obj.x
 			bg_img.bounds.y = new_obj.y
 		});
@@ -34,7 +34,7 @@ bg_img.onLoad = function() {
 		img_move_ani = bg_img_anis.create({
 			x: view.bounds.width - bg_img.bounds.width,
 			y: view.bounds.height - bg_img.bounds.height
-		}, img_move_time * 2, "easeInSine", bg_img.bounds, function(new_obj) {
+		}, img_move_time * 2, "easeInOutSine", bg_img.bounds, function(new_obj) {
 			bg_img.bounds.x = new_obj.x
 			bg_img.bounds.y = new_obj.y
 		});
@@ -64,7 +64,6 @@ function changeBGImg(url) {
 	}, change_img_ani_time, "easeInQuad", {
 		opacity: 1
 	}, function(new_obj) {
-		console.log(new_obj);
 		bg_img.opacity = new_obj.opacity;
 	});
 	setTimeout(function() {
@@ -73,14 +72,17 @@ function changeBGImg(url) {
 
 	$.when(loader_deferred, then_deferred).then(function() {
 		bg_img.source = url;
-		console.log("QAQ")
+		var base_scale = 1.2;
 		bg_img_anis.create({
-			opacity: 1
+			opacity: 1,
+			scale: 1
 		}, 300, "easeInQuad", {
-			opacity: 0
+			opacity: 0,
+			scale: 1.2
 		}, function(new_obj) {
-			console.log(new_obj);
 			bg_img.opacity = new_obj.opacity;
+			// bg_img.scale(1 / base_scale * new_obj.scale);
+			base_scale = new_obj.scale;
 		});
 	});
 };
