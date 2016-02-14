@@ -34,7 +34,7 @@ ap_line.style = {
 
 var mousePos = view.center / 2;
 var pathHeight = mousePos.y;
-var wavelength = 200;
+var wavelength = view.bounds.width / 3;
 var img_hover_ani_time = 1200;
 var img_hover_ani_scale = 1.6;
 
@@ -42,7 +42,7 @@ function init(cb) {
 	$.when(attractions_data).then(function(attractions) {
 		var center_y = view.center.y;
 		attractions.forEach(function(attraction, i) {
-			attraction.position = [wavelength * (i + 1), center_y];
+			attraction.position = [wavelength * (i + 0.5), center_y];
 
 			var img_raster = new Raster(attraction.preview_img_url);
 			img_raster.onLoad = function() {
@@ -140,12 +140,12 @@ function initializePath(_points) {
 	width = view.size.width;
 	height = view.size.height / 2;
 	ap_line.segments = [];
-	ap_line.add([wavelength, view.bounds.height]);
+	ap_line.add(new Point(points[0].position) + [0, view.bounds.height]);
 	for (var i = 0; i < points_len; ++i) {
 		var point = new Point(points[i].position);
 		ap_line.add(point);
 	}
-	ap_line.add([wavelength * i, view.bounds.height]);
+	ap_line.add(new Point(points[points.length - 1].position) + [0, view.bounds.height]);
 	// ap_line.fullySelected = true;
 
 	view.draw()
@@ -196,10 +196,10 @@ ap_point_group.on("mouseleave", function(e) {
 
 function onMouseDrag(e) {
 	drag_position_x === undefined && (drag_position_x = apl_group.position.x);
-	if (drag_position_x > wavelength + apl_group.bounds.width / 2) {
-		drag_position_x = wavelength + apl_group.bounds.width / 2;
-	} else if (drag_position_x < -wavelength * 2) {
-		drag_position_x = -wavelength * 2;
+	if (drag_position_x > apl_group.bounds.width / 2) {
+		drag_position_x = apl_group.bounds.width / 2;
+	} else if (drag_position_x < -wavelength * 3) {
+		drag_position_x = -wavelength * 3;
 	}
 	drag_position_x += e.delta.x;
 	anis.remove(drag_ani);
