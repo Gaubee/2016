@@ -41,8 +41,10 @@ bg_img.onLoad = function() {
 		});
 		img_move_ani.onComplete = toLeft;
 	}
+	if (!isMobile.any) {
 
-	toLeft();
+		toLeft();
+	}
 };
 
 var bg_img_loader = new Raster();
@@ -131,31 +133,47 @@ function hoverBG(is_enter) {
 	}
 };
 
-function _blurBG(blur_px) {
-	var blur = "blur(" + blur_px + "px)";
-	$bg_canvas.css({
-		"-webkit-filter": blur,
-		"-moz-filter": blur,
-		"-o-filter": blur,
-		"filter": blur
-	});
-};
-
+// 背景虚化，手机不启用
 var blur_bg_ani;
 var blur_bg_ani_time = 1200;
 var blur_px_base = 0;
 
-function blurBG(blur_px) {
-	blur_px = parseFloat(blur_px) || 0;
-	bg_img_anis.remove(blur_bg_ani);
-	bg_img_anis.create({
-		blur: blur_px
-	}, blur_bg_ani_time, "easeOutQuad", {
-		blur: blur_px_base
-	}, function(new_obj) {
-		_blurBG(blur_px_base = new_obj.blur)
-	});
-};
+if (isMobile.any) {
+	var blurBG = $.noop;
+
+} else {
+
+	var _css3 = function(prop, value) {
+		var res = {};
+		res["-webkit-" + prop] = value;
+		res["-moz-" + prop] = value;
+		res["-o-" + prop] = value;
+		res["" + prop] = value;
+		return res;
+	};
+
+	var _blurBG = function(blur_px) {
+		var blur = "blur(" + blur_px + "px)";
+		$bg_canvas.css(_css3("filter", blur));
+	};
+
+	var blurBG = function(blur_px) {
+		blur_px = parseFloat(blur_px) || 0;
+		bg_img_anis.remove(blur_bg_ani);
+		bg_img_anis.create({
+			blur: blur_px
+		}, blur_bg_ani_time, "easeOutQuad", {
+			blur: blur_px_base
+		}, function(new_obj) {
+			_blurBG(blur_px_base = new_obj.blur)
+		});
+	};
+
+	_css3("transform", "translate3d(0, 0, 0)");
+	_css3("box-shadow", "inset 0 0 2000px #000000");
+}
+
+
 
 var current_frame_info = {
 	count: 0,

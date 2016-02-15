@@ -34,9 +34,9 @@ ap_line.style = {
 
 var mousePos = view.center / 2;
 var pathHeight = mousePos.y;
-var wavelength = view.bounds.width / 3;
 var img_hover_ani_time = 1200;
 var img_hover_ani_scale = 1.6;
+var wavelength = Math.max(view.bounds.width / 3, ap_point_base_style.radius * 2);
 
 function init(cb) {
 	$.when(attractions_data).then(function(attractions) {
@@ -242,6 +242,6 @@ window.apnav = {
 	jumpTo: jumpTo
 };
 
-// init(function() {
-// 	show(6)
-// });
+init(function() {
+	show(6)
+});
