@@ -1,3 +1,4 @@
+$bg_canvas = $("#bg-canvas");
 var bg_img = window.bi = new Raster('./img/big-bg.jpg', view.center);
 var bg_mask = window.bm = new Path.Rectangle(view.bounds);
 var base_mask_style = {
@@ -128,7 +129,33 @@ function hoverBG(is_enter) {
 				current_frame_info.delta);
 		});
 	}
-}
+};
+
+function _blurBG(blur_px) {
+	var blur = "blur(" + blur_px + "px)";
+	$bg_canvas.css({
+		"-webkit-filter": blur,
+		"-moz-filter": blur,
+		"-o-filter": blur,
+		"filter": blur
+	});
+};
+
+var blur_bg_ani;
+var blur_bg_ani_time = 1200;
+var blur_px_base = 0;
+
+function blurBG(blur_px) {
+	blur_px = parseFloat(blur_px) || 0;
+	bg_img_anis.remove(blur_bg_ani);
+	bg_img_anis.create({
+		blur: blur_px
+	}, blur_bg_ani_time, "easeOutQuad", {
+		blur: blur_px_base
+	}, function(new_obj) {
+		_blurBG(blur_px_base = new_obj.blur)
+	});
+};
 
 var current_frame_info = {
 	count: 0,
@@ -147,5 +174,9 @@ function onFrame(e) {
 
 window.bigbg = {
 	changeImg: changeBGImg,
-	hover: hoverBG
+	hover: hoverBG,
+	blur: blurBG,
+	getBlurPx: function() {
+		return blur_px_base
+	}
 }

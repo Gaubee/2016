@@ -242,6 +242,6 @@ window.apnav = {
 	jumpTo: jumpTo
 };
 
-init(function() {
-	show(6)
-});
+// init(function() {
+// 	show(6)
+// });

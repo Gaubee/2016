@@ -32,6 +32,8 @@
 
 var paper = new function(undefined) {
 
+// var ctx_content_type = 'webgl-2d';
+var ctx_content_type = '2d';
 var Base = new function() {
 	var hidden = /^(statics|enumerable|beans|preserve)$/,
 
@@ -3398,7 +3400,7 @@ var Item = Base.extend(Emitter, {
 			bottomRight = bounds.getBottomRight().ceil(),
 			size = new Size(bottomRight.subtract(topLeft)),
 			canvas = CanvasProvider.getCanvas(size.multiply(scale)),
-			ctx = canvas.getContext('2d'),
+			ctx = canvas.getContext(ctx_content_type),
 			matrix = new Matrix().scale(scale).translate(topLeft.negate());
 		ctx.save();
 		matrix.applyToContext(ctx);
@@ -4708,7 +4710,7 @@ var Raster = Item.extend({
 			copy.setImage(image);
 		} else if (canvas) {
 			var copyCanvas = CanvasProvider.getCanvas(this._size);
-			copyCanvas.getContext('2d').drawImage(canvas, 0, 0);
+			copyCanvas.getContext(ctx_content_type).drawImage(canvas, 0, 0);
 			copy.setImage(copyCanvas);
 		}
 		copy._crossOrigin = this._crossOrigin;
@@ -4813,7 +4815,7 @@ var Raster = Item.extend({
 
 	getContext: function(modify) {
 		if (!this._context)
-			this._context = this.getCanvas().getContext('2d');
+			this._context = this.getCanvas().getContext(ctx_content_type);
 		if (modify) {
 			this._image = null;
 			this._changed(513);
@@ -11515,7 +11517,7 @@ var CanvasView = View.extend({
 						+ [].slice.call(arguments, 1));
 			canvas = CanvasProvider.getCanvas(size);
 		}
-		this._context = canvas.getContext('2d');
+		this._context = canvas.getContext(ctx_content_type);
 		this._eventCounters = {};
 		this._pixelRatio = 1;
 		if (!/^off|false$/.test(PaperScope.getAttribute(canvas, 'hidpi'))) {
@@ -12177,7 +12179,13 @@ var CanvasProvider = {
 		} else {
 			canvas = document.createElement('canvas');
 		}
-		var ctx = canvas.getContext('2d');
+		var ctx = canvas.getContext(ctx_content_type);
+		//+@Gaubee
+		if (!ctx && ctx_content_type==='webgl-2d') {
+			WebGL2D.enable(canvas);
+			ctx = canvas.getContext("webgl-2d"); 
+		}
+		//-@Gaubee
 		if (canvas.width === width && canvas.height === height) {
 			if (clear)
 				ctx.clearRect(0, 0, width + 1, height + 1);
@@ -12190,12 +12198,12 @@ var CanvasProvider = {
 	},
 
 	getContext: function(width, height) {
-		return this.getCanvas(width, height).getContext('2d');
+		return this.getCanvas(width, height).getContext(ctx_content_type);
 	},
 
 	release: function(obj) {
 		var canvas = obj.canvas ? obj.canvas : obj;
-		canvas.getContext('2d').restore();
+		canvas.getContext(ctx_content_type).restore();
 		this.canvases.push(canvas);
 	}
 };

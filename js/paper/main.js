@@ -24,6 +24,7 @@ $welcome_view.find("> .bar").hover(function() {
 	loader.close().then(function() {
 		mapnav.init(mapnav.show);
 	});
+	bigbg.blur(5);
 });
 
 window.main = {

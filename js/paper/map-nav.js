@@ -192,6 +192,8 @@ attraction_points.on("click", function(e) {
 	});
 	oneline_ani.onComplete = function() {
 
+		bigbg.blur(5 + bigbg.getBlurPx());
+
 		var base_scale = 1
 		anis.create({
 			scale: 0
@@ -202,7 +204,9 @@ attraction_points.on("click", function(e) {
 			attraction_line.scale(scale, view.center);
 			attraction_points.scale(scale, view.center);
 			base_scale = new_obj.scale;
-		});
+		}).onComplete = function() {
+			apnav.init(apnav.show)
+		}
 	}
 
 });
