@@ -10,7 +10,7 @@ var ap_line = window.apl = new Path();
 var ap_point_group = window.appg = new Group();
 var ap_point_base_style = {
 	radius: 80,
-	strokeWidth: 2,
+	strokeWidth: 1,
 	strokeColor: 0.5,
 	fillColor: 0.3
 };
@@ -21,15 +21,15 @@ apl_group.addChild(ap_point_group);
 var anis = $.Anis();
 
 ap_line.style = {
-	fillColor: {
-		gradient: {
-			stops: [ /*"rgba(255,255,255,1)",*/ "rgba(255,255,255,0.3)", "rgba(255,255,255,0)"]
-		},
-		origin: view.center - [0, view.center.y / 10],
-		destination: view.bounds.bottomCenter - [0, view.center.y / 10]
-	},
-	// strokeWidth: 1.5,
-	// strokeColor: "rgba(255,255,255,0.8)"
+	// fillColor: {
+	// 	gradient: {
+	// 		stops: [ /*"rgba(255,255,255,1)",*/ "rgba(255,255,255,0.3)", "rgba(255,255,255,0)"]
+	// 	},
+	// 	origin: view.center - [0, view.center.y / 10],
+	// 	destination: view.bounds.bottomCenter - [0, view.center.y / 10]
+	// },
+	strokeWidth: 1.5,
+	strokeColor: "rgba(255,255,255,0.8)"
 };
 
 var mousePos = view.center / 2;
@@ -114,16 +114,19 @@ function init(cb) {
 					// origin: [attraction.position],
 					// destination: [attraction.position[0] + ap_point_base_style.radius, attraction.position[1]]
 					origin: [0, 0],
-					destination: [ap_point_base_style.radius, 0]
+					destination: [ap_point_base_style.radius, 0],
+					// shadowBlur: 5,
+					// shadowColor:  "rgba(255,255,255,1)",
 				}
 			};
 
-			// var img_clip_group = new Group(img_clip, img_raster);
+			var img_clip_group = new Group(img_clip, img_raster);
+			var img_group = new Group(img_clip_group, img_border);
 			// img_clip_group.clipped = true;
 			// var img_group = new Group(img_clip_group, img_border);
 
 			img_clip.clipMask = true;
-			var img_group = new Group(img_raster, img_clip, img_border);
+			// var img_group = new Group(img_raster, img_clip, img_border);
 
 			attraction.position_circle = img_group;
 			ap_point_group.addChild(img_group);

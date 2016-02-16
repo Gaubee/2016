@@ -142,35 +142,71 @@ if (isMobile.any) {
 	var blurBG = $.noop;
 
 } else {
-
-	var _css3 = function(prop, value) {
-		var res = {};
-		res["-webkit-" + prop] = value;
-		res["-moz-" + prop] = value;
-		res["-o-" + prop] = value;
-		res["" + prop] = value;
-		return res;
-	};
-
-	var _blurBG = function(blur_px) {
-		var blur = "blur(" + blur_px + "px)";
-		$bg_canvas.css(_css3("filter", blur));
-	};
-
-	var blurBG = function(blur_px) {
-		blur_px = parseFloat(blur_px) || 0;
-		bg_img_anis.remove(blur_bg_ani);
-		bg_img_anis.create({
-			blur: blur_px
-		}, blur_bg_ani_time, "easeOutQuad", {
-			blur: blur_px_base
-		}, function(new_obj) {
-			_blurBG(blur_px_base = new_obj.blur)
+	try { //使用webgl模糊滤镜
+		var canvas = window.glc = fx.canvas();
+		var $glc = $(glc);
+		$glc.insertAfter($bg_canvas);
+		$glc.css({
+			position: "fixed",
+			zIndex: $bg_canvas.css("zIndex"),
+			backgroundColor: "rgba(255,255,255,0.1)",
+			opacity: 0
 		});
-	};
 
-	_css3("transform", "translate3d(0, 0, 0)");
-	_css3("box-shadow", "inset 0 0 2000px #000000");
+		// var _img = document.createElement("img");
+		var blurBG = function(blur_px) {
+
+			blur_px = parseFloat(blur_px) || 0;
+			bg_img_anis.remove(blur_bg_ani);
+			var bg_canvas = $bg_canvas[0];
+
+			$glc.css("opacity", 1);
+
+			bg_img_anis.create({
+				blur: blur_px
+			}, blur_bg_ani_time, "easeOutQuad", {
+				blur: blur_px_base
+			}, function(new_obj) {
+				var texture = canvas.texture(bg_canvas);
+				canvas.draw(texture).triangleBlur(new_obj.blur).update();
+				// bg_img.source = canvas.toDataURL();
+			}).onComplete = function() {
+				bg_img.source = canvas.toDataURL("image/png");
+				// $glc.css("opacity", 0);
+			};
+		}
+	} catch (e) { // 使用CSS3模糊滤镜
+		console.error(e);
+
+		var _css3 = function(prop, value) {
+			var res = {};
+			res["-webkit-" + prop] = value;
+			res["-moz-" + prop] = value;
+			res["-o-" + prop] = value;
+			res["" + prop] = value;
+			return res;
+		};
+
+		var _blurBG = function(blur_px) {
+			var blur = "blur(" + blur_px + "px)";
+			$bg_canvas.css(_css3("filter", blur));
+		};
+
+		var blurBG = function(blur_px) {
+			blur_px = parseFloat(blur_px) || 0;
+			bg_img_anis.remove(blur_bg_ani);
+			bg_img_anis.create({
+				blur: blur_px
+			}, blur_bg_ani_time, "easeOutQuad", {
+				blur: blur_px_base
+			}, function(new_obj) {
+				_blurBG(blur_px_base = new_obj.blur)
+			});
+		};
+
+		_css3("transform", "translate3d(0, 0, 0)");
+		_css3("box-shadow", "inset 0 0 2000px #000000");
+	}
 }
 
 
